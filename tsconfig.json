@@ -1,0 +1,24 @@
+{
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "jsxImportSource": "preact",
+    "rootDir": "src",
+    "allowJs": true
+  }
+}
+// {
+//   "compilerOptions": {
+//     "module": "commonjs",
+//     "jsx": "preserve",
+//     "sourceMap": true,
+//     "allowJs": true,
+//     "lib": [
+//       "es6",
+//       "dom"
+//     ],
+//     "rootDir": "src",
+//     "moduleResolution": "node"
+//   }
+// }

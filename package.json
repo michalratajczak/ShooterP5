@@ -1,0 +1,22 @@
+{
+  "name": "shooterp5",
+  "version": "1.0.0",
+  "description": "Simple shooter game created using p5.js",
+  "source": "src/index.js",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "parcel serve index.html",
+    "watch": "parcel watch",
+    "build": "parcel build"
+  },
+  "author": "Michał Ratajczak",
+  "license": "MIT",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.5.0",
+    "parcel": "^2.5.0"
+  },
+  "dependencies": {
+    "@types/p5": "^1.4.2",
+    "p5": "^1.4.1"
+  }
+}
