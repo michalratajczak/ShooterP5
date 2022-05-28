@@ -4,5 +4,6 @@ import { Unit } from "../base/unit";
 export class Zombie extends Unit {
   constructor(p5: P5, speed: number, size: number, position: Vector) {
     super(p5, speed, size, position)
+    this.color = p5.color(50, 150, 0)
   }
 }
