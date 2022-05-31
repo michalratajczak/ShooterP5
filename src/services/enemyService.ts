@@ -5,7 +5,7 @@ import { Hero } from "../models/player/hero"
 
 const enemyService = () => {
   const spawnEnemy = (p5: P5, enemies: Unit[], hero: Hero) => {
-    if(p5.frameCount % 60 === 0) {
+    if(p5.frameCount % 120 === 0) {
       const outerSide = p5.random(['x', 'y'])
       let x: number, y: number
       if (outerSide === 'x') {
@@ -16,7 +16,7 @@ const enemyService = () => {
         y = p5.random(0, 1) > 0.5 ? p5.windowHeight + 100 : -100
       }     
 
-      enemies.push(new Zombie(p5, 1.5, 40, p5.createVector(x, y)))
+      enemies.push(new Zombie(p5, 1, 40, p5.createVector(x, y)))
     }
   }
 
@@ -30,18 +30,19 @@ const enemyService = () => {
         if (enemy === other) continue
         if (enemiesToAbsorb.some(e => e.absorbed === enemy)) continue
         if (other.size > enemy.size) continue
-        if (enemy.position.dist(other.position) < enemy.size) {
+        if (enemy.position.dist(other.position) < (enemy.size / 2) - (other.size / 2) + 10) {
           enemiesToAbsorb.push({
             grow: enemy,
             absorbed: other
           })                  
+          console.log(enemy.position.dist(other.position), enemy.size)
         }
       }      
     }    
 
     for (const x of enemiesToAbsorb) {
-      x.grow.size += 10
-      x.speed *= 0.95
+      x.grow.size += 5
+      x.speed *= 0.90
       enemies.splice(enemies.indexOf(x.absorbed), 1)
     }
   }
