@@ -30,12 +30,11 @@ const enemyService = () => {
         if (enemy === other) continue
         if (enemiesToAbsorb.some(e => e.absorbed === enemy)) continue
         if (other.size > enemy.size) continue
-        if (enemy.position.dist(other.position) < (enemy.size / 2) - (other.size / 2) + 10) {
+        if (enemy.position.dist(other.position) < (enemy.size / 2) - (other.size / 4)) {
           enemiesToAbsorb.push({
             grow: enemy,
             absorbed: other
           })                  
-          console.log(enemy.position.dist(other.position), enemy.size)
         }
       }      
     }    

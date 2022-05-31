@@ -31,6 +31,7 @@ export class Unit implements IUnit {
   }
 
   draw(): void {
+    this._p5.strokeWeight(2)
     this._p5.fill(this.color)
     this._p5.circle(this.position.x, this.position.y, this.size)
   }

@@ -33,6 +33,16 @@ const sketch = (p5: P5) => {
     es.drawEnemies(enemies)
     hero.draw()
   }
+
+  p5.keyPressed = () => {
+    if (p5.keyCode === 82) {//R
+      hero.reload()
+    }
+  }
+
+  p5.mouseClicked = () => {
+    hero.attack()
+  } 
 }
 
 new P5(sketch)
