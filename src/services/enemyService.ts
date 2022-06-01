@@ -1,5 +1,5 @@
 import P5 from "p5"
-import { Unit } from "../models/base/unit"
+import { IUnit, Unit } from "../models/base/unit"
 import { Zombie } from "../models/enemies/zombie"
 import { Hero } from "../models/player/hero"
 
@@ -16,7 +16,7 @@ const enemyService = () => {
         y = p5.random(0, 1) > 0.5 ? p5.windowHeight + 100 : -100
       }     
 
-      enemies.push(new Zombie(p5, 1, 40, p5.createVector(x, y)))
+      enemies.push(new Zombie(p5, 1, 50, p5.createVector(x, y), 30))
     }
   }
 
@@ -31,6 +31,8 @@ const enemyService = () => {
         if (enemiesToAbsorb.some(e => e.absorbed === enemy)) continue
         if (other.size > enemy.size) continue
         if (enemy.position.dist(other.position) < (enemy.size / 2) - (other.size / 4)) {
+          enemy.health += other.health
+          enemy.maxHealth += other.maxHealth
           enemiesToAbsorb.push({
             grow: enemy,
             absorbed: other
@@ -52,10 +54,30 @@ const enemyService = () => {
     }
   }
 
+  const calculateDamage = (enemies: Unit[], hero: Hero) => {
+    if (enemies.some(e => hero.position.dist(e.position) < e.size / 2 + hero.size / 2))
+      throw new Error("GAME OVER")
+
+    const deadEnemies: Unit[] = []
+    for (const enemy of enemies) {
+      for (const attack of hero.weapon.getAttacks()) {
+        if (enemy.position.dist(attack.attack) < enemy.size / 2) {
+          hero.weapon.dealDamage(enemy, attack)
+          if (enemy.health <= 0) deadEnemies.push(enemy)
+        }
+      } 
+    }
+
+    for (let enemy of deadEnemies) {
+      enemies.splice(enemies.indexOf(enemy), 1)
+    }
+  }
+
   return {
     spawnEnemy,
     moveEnemies,
-    drawEnemies
+    drawEnemies,
+    calculateDamage
   }
 }
 

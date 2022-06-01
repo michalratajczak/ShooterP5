@@ -6,8 +6,8 @@ import { Gun } from "../weapons/gun";
 export class Hero extends Unit {  
   weapon: IWeapon
 
-  constructor(p5: P5, speed: number, size: number, position: Vector) {
-    super(p5, speed, size, position)
+  constructor(p5: P5, speed: number, size: number, position: Vector, health: number) {
+    super(p5, speed, size, position, health)
     this.color = p5.color(130, 40, 0)
     this.weapon = new Gun(p5)
   }
@@ -29,7 +29,9 @@ export class Hero extends Unit {
 
   draw(): void {
     this.weapon.draw(this.position, this.size / 2)
-    super.draw()
+    this._p5.strokeWeight(2)
+    this._p5.fill(this.color)
+    this._p5.circle(this.position.x, this.position.y, this.size)
   }
 
   attack(): void {

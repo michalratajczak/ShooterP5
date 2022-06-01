@@ -11,7 +11,7 @@ const sketch = (p5: P5) => {
     const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight)
     canvas.parent("app")
 
-    hero = new Hero(p5, 2.5, 30, p5.createVector(p5.windowWidth / 2, p5.windowHeight / 2))
+    hero = new Hero(p5, 2.5, 30, p5.createVector(p5.windowWidth / 2, p5.windowHeight / 2), 1)
     enemies = []
   }
 
@@ -30,6 +30,8 @@ const sketch = (p5: P5) => {
     es.spawnEnemy(p5, enemies, hero)
     es.moveEnemies(enemies, hero)
     
+    es.calculateDamage(enemies, hero)
+
     es.drawEnemies(enemies)
     hero.draw()
   }
