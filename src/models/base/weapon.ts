@@ -11,6 +11,7 @@ export interface IWeapon {
   attack(position: P5.Vector): void
   reload(): void
   isReloading(): boolean
+  getMaxAmmo(): number
   draw(position: P5.Vector, unitSize: number): void
   getAttacks(): IAttack[]
   dealDamage(enemy: IUnit, attack: IAttack): void
@@ -51,6 +52,9 @@ export class RangedWeapon implements IWeapon {
       this.shot(target, position)
       this.ammo--
     }
+    if (this.ammo <= 0) {
+      this.reload()
+    }
   }
   reload(): void {
     if (!this._isReloading) {
@@ -64,6 +68,9 @@ export class RangedWeapon implements IWeapon {
   }
   isReloading(): boolean {
     return this._isReloading
+  }
+  getMaxAmmo(): number {
+    return this.maxAmmo
   }
   getAttacks(): IAttack[] {
     return this._shots
