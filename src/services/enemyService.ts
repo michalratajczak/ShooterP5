@@ -54,10 +54,10 @@ const enemyService = () => {
     }
   }
 
-  const calculateDamage = (enemies: Unit[], hero: Hero) => {
-    if (enemies.some(e => hero.position.dist(e.position) < e.size / 2 + hero.size / 2))
+  const calculateDamage = (enemies: Unit[], hero: Hero): number => {
+    if (enemies.some(e => hero.position.dist(e.position) < e.size / 2 + hero.size / 2)) 
       throw new Error("GAME OVER")
-
+    
     const deadEnemies: Unit[] = []
     for (const enemy of enemies) {
       for (const attack of hero.weapon.getAttacks()) {
@@ -71,6 +71,8 @@ const enemyService = () => {
     for (let enemy of deadEnemies) {
       enemies.splice(enemies.indexOf(enemy), 1)
     }
+
+    return deadEnemies.length
   }
 
   return {

@@ -1,21 +1,17 @@
 import P5 from "p5"
-import { Unit } from "./models/base/unit"
-import { Hero } from "./models/player/hero"
-import enemyService from "./services/enemyService"
-import { Hud } from "./views/hud"
+import { GameView } from "./views/gameView"
+import { IView } from "./views/IView"
+import { MenuView } from "./views/menuView"
+import { ResultView } from "./views/resultView"
 
 const sketch = (p5: P5) => {
-  let hero: Hero 
-  let enemies: Unit[]
-  let hud: Hud
+  let currentView: IView
 
   p5.setup = () => {
     const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight)
     canvas.parent("app")
 
-    hero = new Hero(p5, 2.5, 30, p5.createVector(p5.windowWidth / 2, p5.windowHeight / 2), 1)
-    enemies = []
-    hud = new Hud()
+    currentView = new MenuView(p5)
   }
 
   p5.windowResized = () => {
@@ -23,30 +19,35 @@ const sketch = (p5: P5) => {
   }
 
   p5.draw = () => {
-    const es = enemyService()
     p5.background(120)
 
-    const heroDirection = hero.getMoveDirection()
-    hero.move(heroDirection)
-    
-    es.spawnEnemy(p5, enemies, hero)
-    es.moveEnemies(enemies, hero)
-    
-    es.calculateDamage(enemies, hero)
-
-    es.drawEnemies(enemies)
-    hero.draw()
-    hud.draw(p5, hero)
+    try {
+      currentView.init()
+      currentView.draw()
+    }
+    catch(e: any) {
+      if (e.name === 'GAME OVER') {
+        currentView = new ResultView(p5, e.message)
+      }      
+    }
   }
 
   p5.keyPressed = () => {
-    if (p5.keyCode === 82) {//R
-      hero.reload()
+    try {
+      currentView.keyPressed()
+    }
+    catch(e: any) {
+      if (e.name === 'MENU') {
+        currentView = new MenuView(p5)
+      }
+      else if (e.name === 'GAME') {
+        currentView = new GameView(p5)
+      }
     }
   }
 
   p5.mouseClicked = () => {
-    hero.attack()
+    currentView.mouseClicked()
   } 
 }
 
