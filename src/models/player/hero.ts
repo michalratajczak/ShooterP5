@@ -27,6 +27,13 @@ export class Hero extends Unit {
     return v
   }
 
+  move(v: Vector): void {    
+    this.position.add(v.mult(this.speed))
+    const x = this._p5.constrain(this.position.x, 30, this._p5.windowWidth - 30)
+    const y = this._p5.constrain(this.position.y, 30, this._p5.windowHeight - 30)
+    this.position = this._p5.createVector(x, y)
+  }
+
   draw(): void {
     this.weapon.draw(this.position, this.size / 2)
     this._p5.strokeWeight(2)
