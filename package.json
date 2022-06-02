@@ -2,7 +2,7 @@
   "name": "shooterp5",
   "version": "1.0.0",
   "description": "Simple shooter game created using p5.js",
-  "source": "src/index.js",
+  "source": "src/index.ts",
   "main": "dist/main.js",
   "scripts": {
     "dev": "parcel serve index.html",
