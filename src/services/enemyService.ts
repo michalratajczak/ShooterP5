@@ -1,32 +1,28 @@
-import P5 from "p5"
+import { addEnemy, delEnemy, delProjectile, getEnemies, getHero, getProjectiles, p5 } from "../global"
 import { IUnit, Unit } from "../models/base/unit"
-import { Zombie } from "../models/enemies/zombie"
-import { Hero } from "../models/player/hero"
 
 const enemyService = () => {
-  const spawnEnemy = (p5: P5, enemies: Unit[], hero: Hero) => {
-    if(p5.frameCount % 120 === 0) {
-      const outerSide = p5.random(['x', 'y'])
-      let x: number, y: number
-      if (outerSide === 'x') {
-        x = p5.random(0, 1) > 0.5 ? p5.windowWidth + 100 : -100
-        y = p5.random(0, p5.windowHeight)
-      } else {
-        x = p5.random(0, p5.windowWidth)
-        y = p5.random(0, 1) > 0.5 ? p5.windowHeight + 100 : -100
-      }     
-
-      enemies.push(new Zombie(p5, 1, 50, p5.createVector(x, y), 30))
-    }
+  const spawnEnemy = (enemy: IUnit) => {
+    const outerSide = p5.random(['x', 'y'])
+    let x: number, y: number
+    if (outerSide === 'x') {
+      x = p5.random(0, 1) > 0.5 ? p5.windowWidth + 100 : -100
+      y = p5.random(0, p5.windowHeight)
+    } else {
+      x = p5.random(0, p5.windowWidth)
+      y = p5.random(0, 1) > 0.5 ? p5.windowHeight + 100 : -100
+    }     
+    enemy.position = p5.createVector(x, y)
+    addEnemy(enemy)
   }
 
-  const moveEnemies = (enemies: Unit[], hero: Hero) => {
+  const moveEnemies = () => {
     const enemiesToAbsorb = []
-    for (const enemy of enemies) {
-      const v = hero.position.copy().sub(enemy.position).normalize().mult(enemy.speed)
+    for (const enemy of getEnemies()) {
+      const v = getHero().position.copy().sub(enemy.position).normalize().mult(enemy.speed)
       enemy.position.add(v)
 
-      for (const other of enemies) {
+      for (const other of getEnemies()) {
         if (enemy === other) continue
         if (enemiesToAbsorb.some(e => e.absorbed === enemy)) continue
         if (other.size > enemy.size) continue
@@ -44,32 +40,33 @@ const enemyService = () => {
     for (const x of enemiesToAbsorb) {
       x.grow.size += 5
       x.speed *= 0.90
-      enemies.splice(enemies.indexOf(x.absorbed), 1)
+      delEnemy(x.absorbed)
     }
   }
 
-  const drawEnemies = (enemies: Unit[]) => {
-    for (const enemy of enemies) {
+  const drawEnemies = () => {
+    for (const enemy of getEnemies()) {
       enemy.draw()
     }
   }
 
-  const calculateDamage = (enemies: Unit[], hero: Hero): number => {
-    if (enemies.some(e => hero.position.dist(e.position) < e.size / 2 + hero.size / 2)) 
+  const calculateDamage = (): number => {
+    if (getEnemies().some(e => getHero().position.dist(e.position) < e.size / 2 + getHero().size / 2)) 
       throw new Error("GAME OVER")
     
     const deadEnemies: Unit[] = []
-    for (const enemy of enemies) {
-      for (const attack of hero.weapon.getAttacks()) {
-        if (enemy.position.dist(attack.attack) < enemy.size / 2) {
-          hero.weapon.dealDamage(enemy, attack)
+    for (const enemy of getEnemies()) {
+      for (const projectile of getProjectiles()) {
+        if (enemy.position.dist(projectile.projectile) < enemy.size / 2) {
+          getHero().weapon.dealDamage(enemy)
+          delProjectile(projectile)
           if (enemy.health <= 0) deadEnemies.push(enemy)
         }
       } 
     }
 
     for (let enemy of deadEnemies) {
-      enemies.splice(enemies.indexOf(enemy), 1)
+      delEnemy(enemy)
     }
 
     return deadEnemies.length

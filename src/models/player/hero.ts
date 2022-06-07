@@ -1,4 +1,5 @@
-import P5, { Vector } from "p5";
+import { Vector } from "p5";
+import { p5 } from "../../global";
 import { Unit } from "../base/unit";
 import { IWeapon } from "../base/weapon";
 import { Gun } from "../weapons/gun";
@@ -6,22 +7,22 @@ import { Gun } from "../weapons/gun";
 export class Hero extends Unit {  
   weapon: IWeapon
 
-  constructor(p5: P5, speed: number, size: number, position: Vector, health: number) {
-    super(p5, speed, size, position, health)
+  constructor(speed: number, size: number, position: Vector, health: number) {
+    super(speed, size, position, health)
     this.color = p5.color(130, 40, 0)
-    this.weapon = new Gun(p5)
+    this.weapon = new Gun()
   }
 
   getMoveDirection(): Vector {
-    const v = this._p5.createVector(0, 0)
+    const v = p5.createVector(0, 0)
 
-    if(this._p5.keyIsDown(87)) // W
+    if(p5.keyIsDown(87)) // W
       v.y -= 1
-    if(this._p5.keyIsDown(83)) // S
+    if(p5.keyIsDown(83)) // S
       v.y += 1
-    if(this._p5.keyIsDown(65)) // A
+    if(p5.keyIsDown(65)) // A
       v.x -= 1
-    if(this._p5.keyIsDown(68)) // D
+    if(p5.keyIsDown(68)) // D
       v.x += 1
 
     return v
@@ -29,20 +30,20 @@ export class Hero extends Unit {
 
   move(v: Vector): void {    
     this.position.add(v.mult(this.speed))
-    const x = this._p5.constrain(this.position.x, 30, this._p5.windowWidth - 30)
-    const y = this._p5.constrain(this.position.y, 30, this._p5.windowHeight - 30)
-    this.position = this._p5.createVector(x, y)
+    const x = p5.constrain(this.position.x, 30, p5.windowWidth - 30)
+    const y = p5.constrain(this.position.y, 30, p5.windowHeight - 30)
+    this.position = p5.createVector(x, y)
   }
 
   draw(): void {
     this.weapon.draw(this.position, this.size / 2)
-    this._p5.strokeWeight(2)
-    this._p5.fill(this.color)
-    this._p5.circle(this.position.x, this.position.y, this.size)
+    p5.strokeWeight(2)
+    p5.fill(this.color)
+    p5.circle(this.position.x, this.position.y, this.size)
   }
 
   attack(): void {
-    this.weapon.attack(this.position)
+    this.weapon.attack(this)
   }
 
   reload(): void {

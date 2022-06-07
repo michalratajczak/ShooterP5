@@ -1,8 +1,9 @@
 import P5 from "p5"
-import { GameView } from "./views/gameView"
-import { IView } from "./views/IView"
-import { MenuView } from "./views/menuView"
-import { ResultView } from "./views/resultView"
+import { GameScene } from "./scenes/gameScene"
+import { IView } from "./interfaces/IView"
+import { MenuScene } from "./scenes/menuScene"
+import { ResultScene } from "./scenes/resultScene"
+import { init } from "./global"
 
 const sketch = (p5: P5) => {
   let currentView: IView
@@ -10,8 +11,9 @@ const sketch = (p5: P5) => {
   p5.setup = () => {
     const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight)
     canvas.parent("app")
+    init(p5)
 
-    currentView = new MenuView(p5)
+    currentView = new MenuScene()
   }
 
   p5.windowResized = () => {
@@ -26,8 +28,8 @@ const sketch = (p5: P5) => {
       currentView.draw()
     }
     catch(e: any) {
-      if (e.name === 'GAME OVER') {
-        currentView = new ResultView(p5, e.message)
+      if (e.message === 'GAME OVER') {
+        currentView = new ResultScene()
       }      
     }
   }
@@ -37,11 +39,11 @@ const sketch = (p5: P5) => {
       currentView.keyPressed()
     }
     catch(e: any) {
-      if (e.name === 'MENU') {
-        currentView = new MenuView(p5)
+      if (e.message === 'MENU') {
+        currentView = new MenuScene()
       }
-      else if (e.name === 'GAME') {
-        currentView = new GameView(p5)
+      else if (e.message === 'GAME') {
+        currentView = new GameScene()
       }
     }
   }
