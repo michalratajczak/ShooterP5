@@ -6,6 +6,7 @@ export interface IWeapon {
   _isReloading: boolean
   ammo: number
   reloadingTime: number
+  reloadingStep: number
   damage: number
 
   attack(attacker: IUnit): void
@@ -22,6 +23,7 @@ export class RangedWeapon implements IWeapon {
   maxAmmo: number
   ammo: number
   reloadingTime: number
+  reloadingStep: number
   weaponSpeed: number
   damage: number
 
@@ -29,12 +31,22 @@ export class RangedWeapon implements IWeapon {
     this.maxAmmo = maxAmmo
     this.ammo = maxAmmo
     this.reloadingTime = reloadingTime
+    this.reloadingStep = 0
     this.weaponSpeed = weaponSpeed
     this.damage = damage
+    this._isReloading = false
   }
 
   shot(unit: IUnit, target: P5.Vector): void {}
-  draw(position: P5.Vector, unitSize: number): void {}  
+  draw(position: P5.Vector, unitSize: number): void {
+    if (this._isReloading) {
+      if (this.reloadingStep === this.reloadingTime) {
+        this._isReloading = false
+        this.ammo = this.maxAmmo
+      }
+      this.reloadingStep++
+    }
+  }  
   
   attack(attacker: IUnit): void {
     if (!this._isReloading && this.ammo > 0) {
@@ -49,11 +61,7 @@ export class RangedWeapon implements IWeapon {
   reload(): void {
     if (!this._isReloading) {
       this._isReloading = true
-      const timeout = setTimeout(() => {
-        this.ammo = this.maxAmmo
-        this._isReloading = false
-        clearTimeout(timeout)
-      }, this.reloadingTime / p5.frameRate() * 100)
+      this.reloadingStep = 0
     }
   }
   isReloading(): boolean {

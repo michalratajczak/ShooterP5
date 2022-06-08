@@ -1,7 +1,8 @@
-import { getScore, p5 } from "../global"
-import { IView } from "../interfaces/IView"
+import { getScore, p5, setCurrentScene } from "../global"
+import { IScene } from "../interfaces/scene"
+import { MenuScene } from "./menuScene"
 
-export class ResultScene implements IView {
+export class ResultScene implements IScene {
   init = () => {
 
   }
@@ -21,7 +22,7 @@ export class ResultScene implements IView {
 
   keyPressed = () => {
     if (p5.keyCode === 32) {//space
-      throw new Error('MENU')
+      setCurrentScene(new MenuScene())
     }
   }
 

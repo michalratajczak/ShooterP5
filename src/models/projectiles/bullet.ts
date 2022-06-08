@@ -1,5 +1,5 @@
 import { Color, Vector } from "p5"
-import { p5 } from "../../global"
+import { delProjectile, p5 } from "../../global"
 import { IProjectile } from "../base/projectile"
 import { IUnit } from "../base/unit"
 
@@ -10,6 +10,7 @@ export class Bullet implements IProjectile {
   size: number
   owner: IUnit
   color: Color
+  range: number
 
   onCollision: Function
   onDestroy: Function
@@ -24,10 +25,15 @@ export class Bullet implements IProjectile {
     this.color = color
     this.onCollision = onCollision
     this.onDestroy = onDestroy
+    this.range = p5.windowWidth > p5.windowHeight ? p5.windowWidth : p5.windowHeight
   }
 
   move() {
-    this.projectile.add(this.speed)
+    if (this.projectile.dist(this.start) <= this.range) {      
+      this.projectile.add(this.speed)
+    } else {
+      this.onDestroy(this)
+    }
   }
 
   draw() {

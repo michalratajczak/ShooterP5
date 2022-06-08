@@ -8,6 +8,7 @@ export interface IProjectile {
   size: number
   owner: IUnit
   color: Color
+  range: number
 
   onCollision: Function
   onDestroy: Function

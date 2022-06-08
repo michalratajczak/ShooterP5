@@ -1,7 +1,15 @@
 import { addEnemy, delEnemy, delProjectile, getEnemies, getHero, getProjectiles, p5 } from "../global"
 import { IUnit, Unit } from "../models/base/unit"
+import { Zombie } from "../models/enemies/zombie"
 
 const enemyService = () => {
+  const createEnemy = (): IUnit => {
+    if (p5.frameCount % 120 == 0) {
+      return new Zombie(1.2, 50, p5.createVector(0, 0), 30)
+    }
+    else return null
+  }
+
   const spawnEnemy = (enemy: IUnit) => {
     const outerSide = p5.random(['x', 'y'])
     let x: number, y: number
@@ -58,8 +66,7 @@ const enemyService = () => {
     for (const enemy of getEnemies()) {
       for (const projectile of getProjectiles()) {
         if (enemy.position.dist(projectile.projectile) < enemy.size / 2) {
-          getHero().weapon.dealDamage(enemy)
-          delProjectile(projectile)
+          projectile.onCollision(enemy, projectile)
           if (enemy.health <= 0) deadEnemies.push(enemy)
         }
       } 
@@ -76,7 +83,8 @@ const enemyService = () => {
     spawnEnemy,
     moveEnemies,
     drawEnemies,
-    calculateDamage
+    calculateDamage,
+    createEnemy
   }
 }
 
